@@ -56,8 +56,17 @@ namespace :rsync do
     run.call clone
   end
 
+  desc "Check git remote url"
+  task :check_git_remote_url do
+    current_url = %x[cd #{settings.rsync_stage}; git remote -v | head -n 1 | awk '{print $2}' | tr -d '\n']
+    if current_url != settings.repository
+      print_status "Updating git remote url..."
+      update_url = %x[cd #{settings.rsync_stage}; git remote set-url origin #{settings.repository}]
+    end
+  end
+
   desc "Stage the repository in a local directory."
-  task :stage => %w[create_stage] do
+  task :stage => %w[create_stage check_git_remote_url] do
     print_status "Staging..."
 
     stage = settings.rsync_stage
