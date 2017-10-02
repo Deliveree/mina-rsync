@@ -76,7 +76,9 @@ namespace :rsync do
     # Prefix the Git "HEAD is now at" message, but only if verbose is unset,
     # because then the #print_command called by #run prints its own prefix.
     print "Git checkout: " unless simulate_mode? || verbose_mode?
-    run.call git + %W[reset --hard origin/#{settings.branch}]
+    # Clean git dir before checking out new revision
+    run.call git + %W[clean -fx]
+    run.call git + %W[checkout origin/#{settings.branch}]
   end
 
   task :build do
