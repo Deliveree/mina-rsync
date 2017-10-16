@@ -78,6 +78,7 @@ namespace :rsync do
     print "Git checkout: " unless simulate_mode? || verbose_mode?
     # Clean git dir before checking out new revision
     run.call git + %W[clean -fx]
+    run.call git + %W[reset --hard]
     run.call git + %W[checkout origin/#{settings.branch}]
   end
 
